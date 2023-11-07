@@ -1,4 +1,7 @@
+using HeadHunter.Models;
+using HeadHunter.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace HeadHunter
 {
@@ -27,8 +30,7 @@ namespace HeadHunter
             using (var scope = scopeFactory.CreateScope())
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
-                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-                await AdminInitializer.SeedAdminUser(roleManager, userManager);
+                await AdminInitializer.AddRoles(roleManager);
             }
 
             if (!app.Environment.IsDevelopment())

@@ -1,0 +1,93 @@
+﻿@model HeadHunter.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h2>Регистрация нового пользователя</h2>
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" asp-controller="Account" asp-action="Register" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Role" class="control-label"></label>
+                    <div>
+                        <select class="form-control" name="Role" id="Role">
+                            <option value="applicant">Соискатель</option>
+                            <option value="employer">Работодатель</option>
+                        </select>
+                    </div>
+                <span asp-validation-for="Role" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label" id="UsernameLabel"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Avatar" class="control-label"></label>
+                <input asp-for="Avatar" class="form-control" accept="image/jpeg,image/png,image/heic,image/heif" />
+                <span asp-validation-for="Avatar" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhoneNumber" class="control-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <div class="input-group">
+                    <input asp-for="Password" class="form-control password-input" />
+                    <span class="input-group-text password-toggle">
+                        <i class="fa fa-eye"></i>
+                    </span>
+                </div>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PasswordConfirm" class="control-label"></label>
+                <div class="input-group">
+                    <input asp-for="PasswordConfirm" class="form-control password-input" />
+                    <span class="input-group-text password-toggle">
+                        <i class="fa fa-eye"></i>
+                    </span>
+                </div>
+                <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Регистрация" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            $('#Role').change(function () {
+                let selectedRole = $(this).val();
+                let usernameLabel = $('#UsernameLabel');
+                console.log(selectedRole);
+                if (selectedRole === 'employer') {
+                    usernameLabel.text('Имя компании');
+                } else {
+                    usernameLabel.text('Имя пользователя');
+                }
+            });
+
+            $('.password-toggle').click(function () {
+                $(this).toggleClass('active');
+                let type = $(this).hasClass('active') ? 'text' : 'password';
+                $('.password-input').attr('type', type);
+            });
+        });
+    </script>
+}
