@@ -21,13 +21,30 @@
                     <ul class="navbar-nav flex-grow-1">
                         @if (User.Identity.IsAuthenticated)
                         {
+                            @if (User.IsInRole("employer")) {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Response" asp-action="MyResponses">Мои отклики</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Resume" asp-action="Index">Отклики</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Vacancy" asp-action="Create">Создать вакансию</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Response" asp-action="MyResponses">Мои отклики</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Vacancy" asp-action="Index">Отклики</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Resumes" asp-action="Create">Создать резюме</a>
+                                </li>
+                            }
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                            </li>
-                             <li class="nav-item">
                                 <form method="post" asp-area="" asp-controller="Users" asp-action="Details">
                                     <input type="hidden" name="name" value="@User.Identity.Name" />
                                     <input type="submit" style="display:none;">

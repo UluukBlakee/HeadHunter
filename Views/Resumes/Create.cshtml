@@ -1,0 +1,153 @@
+﻿@model HeadHunter.Models.Resume
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Общая</h1>
+
+<h4>Информация</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="TItle" class="control-label"></label>
+                <input asp-for="TItle" class="form-control" />
+                <span asp-validation-for="TItle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Category" class="control-label"></label>
+                <input asp-for="Category" class="form-control" />
+                <span asp-validation-for="Category" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ExpectedSalary" class="control-label"></label>
+                <input asp-for="ExpectedSalary" class="form-control" />
+                <span asp-validation-for="ExpectedSalary" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Telegram" class="control-label"></label>
+                <input asp-for="Telegram" class="form-control" />
+                <span asp-validation-for="Telegram" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhoneNumber" class="control-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FacebookLink" class="control-label"></label>
+                <input asp-for="FacebookLink" class="form-control" />
+                <span asp-validation-for="FacebookLink" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LinkedinLink" class="control-label"></label>
+                <input asp-for="LinkedinLink" class="form-control" />
+                <span asp-validation-for="LinkedinLink" class="text-danger"></span>
+            </div>
+
+            <div class="education-modules">
+                <h5>Образования</h5>
+                <button type="button" class="btn btn-primary add-education-module">Добавить модуль образования</button>
+            </div>
+
+            <div class="experience-modules" style="margin-top: 20px;">
+                <h5>Опыт работы</h5>
+                <button type="button" class="btn btn-primary add-experience-module">Добавить модуль опыта работы</button>
+            </div>
+
+            <div class="form-group" style="margin-top: 20px;">
+                <input type="submit" value="Далее" class="btn btn-primary" />
+            </div>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function() {
+        let educationModuleIndex = 0;
+        let experienceModuleIndex = 0;
+
+        $(".add-education-module").click(function() {
+            let educationModuleHtml = `<div class="education-module">
+                <div class="form-group">
+                    <input type="text" name="Educations[${educationModuleIndex}].Degree" class="form-control" placeholder="Степень обучения" />
+                </div>
+                <div class="form-group">
+                    <input type="text" name="Educations[${educationModuleIndex}].Institution" class="form-control" placeholder="Учебное заведение" />
+                </div>
+                <div class="form-group">
+                    <input type="text" name="Educations[${educationModuleIndex}].FieldOfStudy" class="form-control" placeholder="Специализация" />
+                </div>
+                <div class="form-group">
+                    <input type="text" name="Educations[${educationModuleIndex}].StartYear" class="form-control" placeholder="Год начала" />
+                </div>
+                <div class="form-group">
+                    <input type="text" name="Educations[${educationModuleIndex}].EndYear" class="form-control" placeholder="Год окончания" />
+                </div>
+                <button type="button" class="btn btn-danger remove-module">Удалить модуль</button>
+            </div>`;
+
+            $(".education-modules").append(educationModuleHtml);
+            console.log(educationModuleIndex);
+            educationModuleIndex++;
+        });
+
+        $(".add-experience-module").click(function() {
+            let experienceModuleHtml = `<div class="experience-module">
+                <div class="form-group">
+                    <input type="text" name="WorkExperiences[${experienceModuleIndex}].StartYear" class="form-control" placeholder="Год начала работы" />
+                </div>
+                <div class="form-group">
+                    <input type="text" name="WorkExperiences[${experienceModuleIndex}].EndYear" class="form-control" placeholder="Год окончания работы" />
+                </div>
+                <div class="form-group">
+                    <input type="text" name="WorkExperiences[${experienceModuleIndex}].CompanyName" class="form-control" placeholder="Название компании" />
+                </div>
+                <div class="form-group">
+                    <input type="text" name="WorkExperiences[${experienceModuleIndex}].Position" class="form-control" placeholder="Должность" />
+                </div>
+                <div class="form-group">
+                    <textarea name="WorkExperiences[${experienceModuleIndex}].Responsibilities" class="form-control" placeholder="Обязанности"></textarea>
+                </div>
+                <button type="button" class="btn btn-danger remove-module">Удалить модуль</button>
+            </div>`;
+
+            $(".experience-modules").append(experienceModuleHtml);
+            console.log(experienceModuleIndex);
+            experienceModuleIndex++;
+        });
+
+        $(document).on("click", ".remove-module", function() {
+            $(this).parent().remove();
+
+            $(".education-modules .education-module").each(function(index) {
+                $(this).find("input").each(function() {
+                    let name = $(this).attr("name");
+                    name = name.replace(/\[\d+\]/, "[" + index + "]");
+                    $(this).attr("name", name);
+                });
+            });
+
+            $(".experience-modules .experience-module").each(function(index) {
+                $(this).find("input, textarea").each(function() {
+                    let name = $(this).attr("name");
+                    name = name.replace(/\[\d+\]/, "[" + index + "]");
+                    $(this).attr("name", name);
+                });
+            });
+        });
+    });
+
+    </script>
+}
