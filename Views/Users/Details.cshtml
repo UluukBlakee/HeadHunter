@@ -1,0 +1,132 @@
+﻿@model HeadHunter.Models.User
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <img src="@Model.Avatar" alt="Avatar" class="img-fluid" id="userAvatar">
+        <div class="text-center">
+            <a href="#" data-bs-toggle="modal" data-bs-target="#editModal">Редактировать</a> |
+            <a href="#" data-bs-toggle="modal" data-bs-target="#editPhotoModal">Изменить фото</a>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <h4 id="name">@Html.DisplayFor(model => model.Name)</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-3">
+                Почта:
+            </dt>
+            <dd class="col-sm-9" id="email">
+                @Html.DisplayFor(model => model.Email)
+            </dd>
+            <dt class="col-sm-3">
+                Номер телефона:
+            </dt>
+            <dd class="col-sm-9" id="phoneNumber">
+                @Html.DisplayFor(model => model.PhoneNumber)
+            </dd>
+        </dl>
+    </div>
+</div>
+
+
+
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Редактировать</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="inputEmail" name="inputEmail" value="@Model.Email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="phoneNumber" class="form-label">Номер телефона</label>
+                            <input type="tel" class="form-control" id="inputPhoneNumber" name="inputPhoneNumber" value="@Model.PhoneNumber">
+                        </div>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Имя пользователя</label>
+                            <input type="text" class="form-control" id="inputName" name="inputName" value="@Model.Name">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="editPhotoModal" tabindex="-1" aria-labelledby="editPhotoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editPhotoModalLabel">Изменить фото</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editPhotoForm">
+                        <div class="mb-3">
+                            <label for="photo" class="form-label">Выберите новую фотографию</label>
+                            <input type="file" class="form-control" id="photo" name="photo" accept="image/jpeg,image/png,image/heic,image/heif">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            $('#editForm').submit(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '@Url.Action("Edit", "Users")',
+                    type: 'PUT',
+                    data: {
+                        id: @Model.Id,
+                        email: $('#inputEmail').val(),
+                        phoneNumber: $('#inputPhoneNumber').val(),
+                        name: $('#inputName').val()
+                    },
+                    success: function(data) {
+                        $('#editModal').modal('hide');
+                        $('#name').text(data.name);
+                        $('#email').text(data.email);
+                        $('#phoneNumber').text(data.phoneNumber);
+                        $('#inputName').val(data.name);
+                        $('#inputEmail').val(data.email);
+                        $('#inputPhoneNumber').val(data.phoneNumber);
+                    }
+                });
+            });
+
+            $('#editPhotoForm').submit(function (e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: '@Url.Action("EditPhoto", "Users", new { id = Model.Id })',
+                    type: 'PUT',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(data) {
+                        $('#userAvatar').attr('src', data.avatar);
+                        $('#editPhotoModal').modal('hide');
+                    }
+                });
+            });
+        });
+    </script>
+}

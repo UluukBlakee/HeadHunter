@@ -25,9 +25,9 @@
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="UserName" class="control-label" id="UsernameLabel"></label>
-                <input asp-for="UserName" class="form-control" />
-                <span asp-validation-for="UserName" class="text-danger"></span>
+                <label asp-for="Name" class="control-label" id="NameLabel"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Avatar" class="control-label"></label>
@@ -74,7 +74,7 @@
         $(document).ready(function () {
             $('#Role').change(function () {
                 let selectedRole = $(this).val();
-                let usernameLabel = $('#UsernameLabel');
+                let nameLabel = $('#NameLabel');
                 console.log(selectedRole);
                 if (selectedRole === 'employer') {
                     usernameLabel.text('Имя компании');

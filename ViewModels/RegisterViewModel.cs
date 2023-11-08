@@ -7,11 +7,10 @@ namespace HeadHunter.ViewModels
     {
         [Required]
         [Display(Name = "Имя пользователя")]
-        public string? UserName { get; set; }
+        public string? Name { get; set; }
         [Required]
         [Display(Name = "Email")]
         public string? Email { get; set; }
-        [Required]
         [Display(Name = "Аватар")]
         public IFormFile? Avatar { get; set; }
         [Display(Name = "Номер телефона")]

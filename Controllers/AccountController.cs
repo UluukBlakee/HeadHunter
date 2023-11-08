@@ -26,16 +26,19 @@ namespace HeadHunter.Controllers
         {
             if (ModelState.IsValid)
             {
-                long size = model.Avatar.Length;
                 string? imagePath = null;
-                if (size > 0)
+                if (model.Avatar != null)
                 {
-                    string filePath = Path.Combine(appEnvironment.WebRootPath, "images", model.Avatar.FileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    long size = model.Avatar.Length;
+                    if (size > 0)
                     {
-                        await model.Avatar.CopyToAsync(stream);
+                        string filePath = Path.Combine(appEnvironment.WebRootPath, "images", model.Avatar.FileName);
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await model.Avatar.CopyToAsync(stream);
+                        }
+                        imagePath = $"/images/{model.Avatar.FileName}";
                     }
-                    imagePath = $"/images/{model.Avatar.FileName}";
                 }
                 var existingUser = await _userManager.FindByEmailAsync(model.Email);
                 if (existingUser != null)
@@ -46,7 +49,8 @@ namespace HeadHunter.Controllers
                 User user = new User
                 {
                     Email = model.Email,
-                    UserName = model.UserName,
+                    UserName = model.Email,
+                    Name = model.Name,
                     Avatar = imagePath != null ? imagePath : "https://herrmans.eu/wp-content/uploads/2019/01/765-default-avatar.png",
                     PhoneNumber = model.PhoneNumber
                 };
