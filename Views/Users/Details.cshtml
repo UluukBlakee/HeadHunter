@@ -83,7 +83,72 @@
         </div>
     </div>
 
-
+@if (User.IsInRole("employer"))
+{
+    @if (Model.Resumes != null)
+    {
+        <h4>Созданные резюме</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Название резюме</th>
+                    <th>Дата обновления</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var resume in Model.Resumes)
+                {
+                    <tr>
+                        <td>@resume.Title</td>
+                        <td>@resume.LastUpdated</td>
+                        <td>
+                            <a asp-controller="Resumes" asp-action="Edit" asp-route-id="@resume.Id">Редактировать</a>
+                            <a asp-controller="Resumes" asp-action="Update" asp-route-id="@resume.Id">Обновить</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <h4>Нету созданных резюме</h4>
+    }
+}
+else
+{
+    @if (Model.Resumes != null)
+    {
+        <h4>Созданные вакансии</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Название вакансии</th>
+                    <th>Дата обновления</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var vacancy in Model.Vacancies)
+                {
+                    <tr>
+                        <td>@vacancy.Title</td>
+                        <td>@vacancy.LastUpdated</td>
+                        <td>
+                            <a asp-controller="Vacancies" asp-action="Edit" asp-route-id="@vacancy.Id">Редактировать</a>
+                            <a asp-controller="Vacancies" asp-action="Update" asp-route-id="@vacancy.Id">Обновить</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <h4>Нету созданных вакансий</h4>
+    }
+}
 @section Scripts {
     <script>
         $(document).ready(function () {

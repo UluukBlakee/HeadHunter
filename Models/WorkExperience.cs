@@ -15,13 +15,13 @@ namespace HeadHunter.Models
         public int EndYear { get; set; }
         [Display(Name = "Названия компании")]
         [Required(ErrorMessage = "Поле 'Название компании' обязательно для заполнения")]
-        public string CompanyName { get; set; }
+        public string?  CompanyName { get; set; }
         [Display(Name = "Должность")]
         [Required(ErrorMessage = "Поле 'Должность' обязательно для заполнения")]
-        public string Position { get; set; }
+        public string? Position { get; set; }
         [Display(Name = "Обязанности")]
         [Required(ErrorMessage = "Поле 'Обязанности' обязательно для заполнения")]
-        public string Responsibilities { get; set; }
-        public Resume Resume { get; set; }
+        public string? Responsibilities { get; set; }
+        public Resume? Resume { get; set; }
     }
 }

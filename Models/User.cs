@@ -7,5 +7,7 @@ namespace HeadHunter.Models
     {
         public string? Name { get; set; }
         public string? Avatar { get; set; }
+        public List<Resume>? Resumes { get; set; }
+        public List<Vacancy>? Vacancies { get; set; }
     }
 }

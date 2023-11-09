@@ -1,6 +1,7 @@
 ﻿using HeadHunter.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace HeadHunter.Controllers
 {
@@ -26,47 +27,71 @@ namespace HeadHunter.Controllers
                 resume.UserId = user.Id;
                 resume.LastUpdated = DateTime.UtcNow;
                 resume.IsPublished = false;
+                foreach (WorkExperience work in resume.WorkExperiences)
+                {
+                    work.ResumeId = resume.Id;
+                    await _context.Works.AddAsync(work);
+                    await _context.SaveChangesAsync();
+                }
+                foreach (Education education in resume.Educations)
+                {
+                    education.ResumeId = resume.Id;
+                    await _context.Educations.AddAsync(education);
+                    await _context.SaveChangesAsync();
+                }
                 await _context.Resumes.AddAsync(resume);
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Home");
         }
 
-        public async Task<IActionResult> Edit(int? id, string? name)
+        public async Task<IActionResult> Edit(int id)
         {
-            User user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == name);
-            if (user == null)
-            {
-                user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
-            }
-            return View(user);
+            Resume resume = await _context.Resumes.FirstOrDefaultAsync(r => r.Id == id);
+            return View(resume);
         }
-        public async Task<IActionResult> Update(int? id, string? name)
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Resume resume)
         {
-            User user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == name);
-            if (user == null)
+            if (resume != null)
             {
-                user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+                resume.LastUpdated = DateTime.UtcNow;
+                _context.Resumes.Update(resume);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index", "Home");
             }
-            return View(user);
+            return NotFound();
         }
-        public async Task<IActionResult> Details(int? id, string? name)
+        public async Task<IActionResult> Update(int id)
         {
-            User user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == name);
-            if (user == null)
+            Resume resume = await _context.Resumes.FirstOrDefaultAsync(r => r.Id == id);
+            if (resume != null)
             {
-                user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+                resume.LastUpdated = DateTime.UtcNow;
+                _context.Resumes.Update(resume);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index", "Home");
             }
-            return View(user);
+            return NotFound();
         }
-        public async Task<IActionResult> Publish(int? id, string? name)
+        public async Task<IActionResult> Details(int id)
         {
-            User user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == name);
-            if (user == null)
+            Resume resume = await _context.Resumes.FirstOrDefaultAsync(r => r.Id == id);
+            return View(resume);
+        }
+        public async Task<IActionResult> Publish(int id)
+        {
+            Resume resume = await _context.Resumes.FirstOrDefaultAsync(r => r.Id == id);
+            if (resume != null)
             {
-                user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+                resume.IsPublished = true;
+                _context.Resumes.Update(resume);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index", "Home");
             }
-            return View(user);
+            return NotFound();
         }
     }
 }

@@ -4,13 +4,13 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Общая</h1>
+<h1>Редактирование</h1>
 
-<h4>Информация</h4>
+<h4>Информаций</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
@@ -66,16 +66,60 @@
 
             <div class="education-modules">
                 <h5>Образования</h5>
+                @foreach(var education in Model.Educations)
+                {
+                    <div class="education-module">
+                        <div class="form-group">
+                            <input type="text" name="Educations[@education.Id].Degree" class="form-control" value="@education.Degree" placeholder="Степень обучения" required />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="Educations[@education.Id].Institution" class="form-control" value="@education.Institution" placeholder="Учебное заведение" required />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="Educations[@education.Id].FieldOfStudy" class="form-control" value="@education.FieldOfStudy" placeholder="Специализация" required />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="Educations[@education.Id].StartYear" class="form-control" value="@education.StartYear" placeholder="Год начала" required />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="Educations[@education.Id].EndYear" class="form-control" value="@education.EndYear" placeholder="Год окончания" required />
+                        </div>
+                        <button type="button" class="btn btn-danger remove-module">Удалить модуль</button>
+                    </div>
+                }
                 <button type="button" class="btn btn-primary add-education-module">Добавить модуль образования</button>
             </div>
 
+
             <div class="experience-modules" style="margin-top: 20px;">
                 <h5>Опыт работы</h5>
+                @foreach(var experience in Model.WorkExperiences)
+                {
+                    <div class="experience-module">
+                        <div class="form-group">
+                            <input type="text" name="WorkExperiences[@experience.Id].StartYear" class="form-control" value="@experience.StartYear" placeholder="Год начала работы" required />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="WorkExperiences[@experience.Id].EndYear" class="form-control" value="@experience.EndYear" placeholder="Год окончания работы" required />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="WorkExperiences[@experience.Id].CompanyName" class="form-control" value="@experience.CompanyName" placeholder="Название компании" required />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="WorkExperiences[@experience.Id].Position" class="form-control" value="@experience.Position" placeholder="Должность" required />
+                        </div>
+                        <div class="form-group">
+                            <textarea name="WorkExperiences[@experience.Id].Responsibilities" class="form-control" placeholder="Обязанности" required>@experience.Responsibilities</textarea>
+                        </div>
+                        <button type="button" class="btn btn-danger remove-module">Удалить модуль</button>
+                    </div>
+                }
                 <button type="button" class="btn btn-primary add-experience-module">Добавить модуль опыта работы</button>
             </div>
 
+
             <div class="form-group" style="margin-top: 20px;">
-                <input type="submit" value="Создать" class="btn btn-primary" />
+                <input type="submit" value="Сохранмть" class="btn btn-primary" />
             </div>
 
         </form>
@@ -86,8 +130,10 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         $(document).ready(function() {
+        let educationModuleIndex = $(".education-module").length;
+        let experienceModuleIndex = $(".experience-module").length;
+
         $(".add-education-module").click(function() {
-            let educationModuleIndex = $(".education-module").length;
             let educationModuleHtml = `<div class="education-module">
                 <div class="form-group">
                     <input type="text" name="Educations[${educationModuleIndex}].Degree" class="form-control" placeholder="Степень обучения" required />
@@ -109,11 +155,11 @@
 
             $(".education-modules").append(educationModuleHtml);
             console.log(educationModuleIndex);
+            educationModuleIndex++;
         });
 
 
         $(".add-experience-module").click(function() {
-            let experienceModuleIndex = $(".experience-module").length;
             let experienceModuleHtml = `<div class="experience-module">
                 <div class="form-group">
                     <input type="text" name="WorkExperiences[${experienceModuleIndex}].StartYear" class="form-control" placeholder="Год начала работы" required />
@@ -135,6 +181,7 @@
 
             $(".experience-modules").append(experienceModuleHtml);
             console.log(experienceModuleIndex);
+            experienceModuleIndex++;
         });
 
 
