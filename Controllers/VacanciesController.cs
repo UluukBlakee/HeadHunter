@@ -31,6 +31,7 @@ namespace HeadHunter.Controllers
                     case VacancySortState.SalaryAsc: vacancies = vacancies.OrderBy(v => v.Salary).ToList(); break;
                     case VacancySortState.SalaryDesc: vacancies = vacancies.OrderByDescending(v => v.Salary).ToList(); break;
                 }
+                ViewBag.User = user;
                 return View(vacancies.ToPagedList(pageNumber, pageSize));
             }
             else

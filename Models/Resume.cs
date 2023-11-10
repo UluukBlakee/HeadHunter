@@ -14,7 +14,7 @@ namespace HeadHunter.Models
         [Display(Name = "Ожидаемая Зарплата")]
         [Required(ErrorMessage = "Поле 'Ожидаемая Зарплата' обязательно для заполнения")]
         [Range(0, double.MaxValue, ErrorMessage = "Ожидаемая Зарплата должна быть положительным числом")]
-        public decimal ExpectedSalary { get; set; }
+        public int ExpectedSalary { get; set; }
         [Display(Name = "Телеграм")]
         [Required(ErrorMessage = "Поле 'Телеграм' обязательно для заполнения")]
         public string? Telegram { get; set; }

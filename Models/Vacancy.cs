@@ -10,7 +10,8 @@ namespace HeadHunter.Models
         public string? Title { get; set; }
         [Display(Name = "Заработная плата")]
         [Required(ErrorMessage = "Поле 'Заработная плата' обязательно для заполнения")]
-        public decimal Salary { get; set; }
+        [Range(0, double.MaxValue, ErrorMessage = "Ожидаемая Зарплата должна быть положительным числом")]
+        public int Salary { get; set; }
         [Display(Name = "Детальное описание вакансии")]
         [Required(ErrorMessage = "Поле 'Детальное описание вакансии' обязательно для заполнения")]
         public string? Description { get; set; }
