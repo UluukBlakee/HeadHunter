@@ -1,4 +1,5 @@
-﻿using HeadHunter.Models;
+﻿using HeadHunter.Enums;
+using HeadHunter.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using X.PagedList;
@@ -12,7 +13,7 @@ namespace HeadHunter.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult> Index(int? page)
+        public async Task<IActionResult> Index(int? page, string? filterCategory, string? search, VacancySortState sortState = VacancySortState.SalaryAsc)
         {
             int pageSize = 20;
             int pageNumber = (page ?? 1);
@@ -20,6 +21,16 @@ namespace HeadHunter.Controllers
             if (user.Resumes.Any())
             {
                 List <Vacancy> vacancies = await _context.Vacancies.Include(v => v.User).OrderByDescending(v => v.LastUpdated).ToListAsync();
+                if (search != null)
+                    vacancies = vacancies.Where(v => v.Title.Contains(search)).ToList();
+                if (filterCategory != null)
+                    vacancies = vacancies.Where(v => v.Category == filterCategory).ToList();
+                ViewBag.SalarySort = sortState == VacancySortState.SalaryAsc ? VacancySortState.SalaryDesc : VacancySortState.SalaryAsc;
+                switch (sortState)
+                {
+                    case VacancySortState.SalaryAsc: vacancies = vacancies.OrderBy(v => v.Salary).ToList(); break;
+                    case VacancySortState.SalaryDesc: vacancies = vacancies.OrderByDescending(v => v.Salary).ToList(); break;
+                }
                 return View(vacancies.ToPagedList(pageNumber, pageSize));
             }
             else

@@ -5,6 +5,51 @@
     ViewData["Title"] = "Index";
 }
 
+       <div class="row">
+        <div class="col-md-4 mb-3">
+            <form asp-action="Index" method="get">
+                <div class="form-group">
+                    <label for="sortState">Сортировать по:</label>
+                    <select name="sortState" class="form-select mt-2" onchange="this.form.submit()">
+                        <option>Сортировка</option>
+                        <option value="@ViewBag.SalarySort">По зарплате</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <form asp-action="Index" method="get">
+                <div class="form-group">
+                    <label for="search">Поиск</label>
+                    <input type="text" name="search" class="form-control mt-2" placeholder="Введите текст для поиска" />
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <form asp-action="Index" method="get">
+                <div class="form-group">
+                    <label for="filterCategory">Фильтрация по категории:</label>
+                    <select name="filterCategory" class="form-select mt-2" onchange="this.form.submit()">
+                        <option>Фильтрация</option>
+                        <option value="Разработка программного обеспечения">Разработка программного обеспечения</option>
+                        <option value="Маркетинг и реклама">Маркетинг и реклама</option>
+                        <option value="Финансы и бухгалтерия">Финансы и бухгалтерия</option>
+                        <option value="Медицина и здравоохранение">Медицина и здравоохранение</option>
+                        <option value="Образование">Образование</option>
+                        <option value="Дизайн и искусство">Дизайн и искусство</option>
+                        <option value="Качество и тестирование">Качество и тестирование</option>
+                        <option value="IT и администрирование систем">IT и администрирование систем</option>
+                        <option value="Продажи и обслуживание клиентов">Продажи и обслуживание клиентов</option>
+                        <option value="Юриспруденция и право">Юриспруденция и право</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
 @foreach (var vacancy in Model)
 {
     <a asp-controller="Vacancies" asp-action="Details" asp-route-id="@vacancy.Id" class="text-decoration-none">
