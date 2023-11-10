@@ -1,0 +1,26 @@
+﻿@model X.PagedList.IPagedList<HeadHunter.Models.Vacancy>
+@using X.PagedList.Mvc.Core
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@foreach (var vacancy in Model)
+{
+    <a asp-controller="Vacancies" asp-action="Details" asp-route-id="@vacancy.Id" class="text-decoration-none">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title" style="font-size: 2rem; color: black; font-weight: bold">@vacancy.Title</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Дата публикации: @vacancy.LastUpdated.ToShortDateString()</h6>
+                <p class="card-text" style="font-size: 1.5rem; color: black;">Заработная плата: @vacancy.Salary</p>
+                <a asp-controller="Users" asp-action="Details" asp-route-id="@vacancy.User.Id" class="text-decoration-none" style="color: black;">@vacancy.User.Name</a>
+                <br>
+                <a asp-controller="Responses" asp-action="Details" asp-route-id="@vacancy.User.Id" class="btn btn-primary mt-2" style="width: auto;">Откликнуться</a>
+            </div>
+        </div>
+    </a>
+}
+
+<div class="d-flex justify-content-center mt-3">
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+</div>

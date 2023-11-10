@@ -18,10 +18,10 @@ namespace HeadHunter.Controllers
 
         public async Task<IActionResult> Details(int? id, string? name)
         {
-            User user = await _context.Users.Include(u => u.Resumes).ThenInclude(r => r.WorkExperiences).Include(u => u.Resumes).ThenInclude(r => r.Educations).FirstOrDefaultAsync(u => u.UserName == name);
+            User user = await _context.Users.Include(u => u.Resumes).ThenInclude(r => r.WorkExperiences).Include(u => u.Resumes).ThenInclude(r => r.Educations).Include(u => u.Vacancies).FirstOrDefaultAsync(u => u.UserName == name);
             if (user == null)
             {
-                user = await _context.Users.Include(u => u.Resumes).ThenInclude(r => r.WorkExperiences).Include(u => u.Resumes).ThenInclude(r => r.Educations).FirstOrDefaultAsync(u => u.Id == id);
+                user = await _context.Users.Include(u => u.Resumes).ThenInclude(r => r.WorkExperiences).Include(u => u.Resumes).ThenInclude(r => r.Educations).Include(u => u.Vacancies).FirstOrDefaultAsync(u => u.Id == id);
             }
             return View(user);
         }

@@ -1,6 +1,7 @@
 ﻿using HeadHunter.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using X.PagedList;
 
 namespace HeadHunter.Controllers
 {
@@ -10,6 +11,21 @@ namespace HeadHunter.Controllers
         public VacanciesController(HhContext context)
         {
             _context = context;
+        }
+        public async Task<IActionResult> Index(int? page)
+        {
+            int pageSize = 20;
+            int pageNumber = (page ?? 1);
+            User user = await _context.Users.Include(u => u.Resumes).FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
+            if (user.Resumes.Any())
+            {
+                List <Vacancy> vacancies = await _context.Vacancies.Include(v => v.User).OrderByDescending(v => v.LastUpdated).ToListAsync();
+                return View(vacancies.ToPagedList(pageNumber, pageSize));
+            }
+            else
+            {
+                return RedirectToAction("Create", "Resumes");
+            }
         }
         public async Task<IActionResult> Create()
         {

@@ -23,22 +23,22 @@
                         {
                             @if (User.IsInRole("employer")) {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Response" asp-action="MyResponses">Мои отклики</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Responses" asp-action="MyResponses">Мои отклики</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Resume" asp-action="Index">Отклики</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Resumes" asp-action="Index">Все резюме</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Vacancy" asp-action="Create">Создать вакансию</a>
+                                 <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Vacancies" asp-action="Create">Создать вакансию</a>
                                 </li>
                             }
                             else
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Response" asp-action="MyResponses">Мои отклики</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Responses" asp-action="MyResponses">Мои отклики</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Vacancy" asp-action="Index">Отклики</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Vacancies" asp-action="Index">Все вакансии</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Resumes" asp-action="Create">Создать резюме</a>

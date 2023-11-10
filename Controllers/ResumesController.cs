@@ -12,6 +12,19 @@ namespace HeadHunter.Controllers
         {
             _context = context;
         }
+        public async Task<IActionResult> Index()
+        {
+            User user = await _context.Users.Include(u => u.Vacancies).FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
+            if (user.Vacancies.Any())
+            {
+                List<Resume> resumes = await _context.Resumes.OrderByDescending(r => r.LastUpdated).ToListAsync();
+                return View(resumes);
+            }
+            else
+            {
+                return RedirectToAction("Create", "Vacancies");
+            }
+        }
         public async Task<IActionResult> Create()
         {
             return View();
