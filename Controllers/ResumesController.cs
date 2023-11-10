@@ -27,19 +27,24 @@ namespace HeadHunter.Controllers
                 resume.UserId = user.Id;
                 resume.LastUpdated = DateTime.UtcNow;
                 resume.IsPublished = false;
-                foreach (WorkExperience work in resume.WorkExperiences)
-                {
-                    work.ResumeId = resume.Id;
-                    await _context.Works.AddAsync(work);
-                    await _context.SaveChangesAsync();
-                }
-                foreach (Education education in resume.Educations)
-                {
-                    education.ResumeId = resume.Id;
-                    await _context.Educations.AddAsync(education);
-                    await _context.SaveChangesAsync();
-                }
                 await _context.Resumes.AddAsync(resume);
+
+                if (resume.WorkExperiences != null)
+                {
+                    foreach (WorkExperience work in resume.WorkExperiences)
+                    {
+                        work.ResumeId = resume.Id;
+                        await _context.Works.AddAsync(work);
+                    }
+                }
+                if (resume.Educations != null)
+                {
+                    foreach (Education education in resume.Educations)
+                    {
+                        education.ResumeId = resume.Id;
+                        await _context.Educations.AddAsync(education);
+                    }
+                }
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Home");
@@ -47,7 +52,7 @@ namespace HeadHunter.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
-            Resume resume = await _context.Resumes.FirstOrDefaultAsync(r => r.Id == id);
+            Resume resume = await _context.Resumes.Include(r => r.Educations).Include(r => r.WorkExperiences).FirstOrDefaultAsync(r => r.Id == id);
             return View(resume);
         }
 
@@ -55,10 +60,29 @@ namespace HeadHunter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Resume resume)
         {
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
             if (resume != null)
             {
+                resume.UserId = user.Id;
                 resume.LastUpdated = DateTime.UtcNow;
                 _context.Resumes.Update(resume);
+
+                if (resume.WorkExperiences != null)
+                {
+                    foreach (WorkExperience work in resume.WorkExperiences)
+                    {
+                        work.ResumeId = resume.Id;
+                        await _context.Works.AddAsync(work);
+                    }
+                }
+                if (resume.Educations != null)
+                {
+                    foreach (Education education in resume.Educations)
+                    {
+                        education.ResumeId = resume.Id;
+                        await _context.Educations.AddAsync(education);
+                    }
+                }
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index", "Home");
             }
@@ -78,7 +102,7 @@ namespace HeadHunter.Controllers
         }
         public async Task<IActionResult> Details(int id)
         {
-            Resume resume = await _context.Resumes.FirstOrDefaultAsync(r => r.Id == id);
+            Resume resume = await _context.Resumes.Include(r => r.Educations).Include(r => r.WorkExperiences).FirstOrDefaultAsync(r => r.Id == id);
             return View(resume);
         }
         public async Task<IActionResult> Publish(int id)
