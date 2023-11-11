@@ -34,32 +34,47 @@ namespace HeadHunter.Controllers
         [HttpPut]
         public async Task<IActionResult> Edit(int id, string email, string phoneNumber, string name)
         {
-            User user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
-            user.Email = email;
-            user.PhoneNumber = phoneNumber;
-            user.Name = name;
-            _context.Update(user);
-            await _context.SaveChangesAsync();
-            return Json(user);
+            User user = await _userManager.FindByIdAsync(id.ToString());
+
+            if (user != null)
+            {
+                user.Email = email;
+                user.PhoneNumber = phoneNumber;
+                user.Name = name;
+
+                await _userManager.UpdateAsync(user);
+
+                return Json(user);
+            }
+
+            return NotFound();
         }
+
         [HttpPut]
         public async Task<IActionResult> EditPhoto(int id, IFormFile photo)
         {
-            User user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
-            if (photo != null && photo.Length > 0)
+            User user = await _userManager.FindByIdAsync(id.ToString());
+
+            if (user != null && photo != null && photo.Length > 0)
             {
                 string fileName = Guid.NewGuid().ToString() + Path.GetExtension(photo.FileName);
                 string filePath = Path.Combine(appEnvironment.WebRootPath, "images", fileName);
+
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await photo.CopyToAsync(stream);
                 }
+
                 string imagePath = $"/images/{fileName}";
                 user.Avatar = imagePath;
+
+                await _userManager.UpdateAsync(user);
+
+                return Json(user);
             }
-            _context.Update(user);
-            await _context.SaveChangesAsync();
-            return Json(user);
+
+            return NotFound();
         }
+
     }
 }

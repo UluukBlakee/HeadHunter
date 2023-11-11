@@ -65,56 +65,76 @@
 
 
 @section Scripts {
-@*    <script>
-        function formatDateTime(dateString) {
-            const date = new Date(dateString);
-            const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
-            return date.toLocaleDateString(undefined, options);
-        }
+    <script>
+        $(document).ready(function () {
+            getMessage();
 
-        function getMessage() {
-            $('.chat-messages').html("");
-            $.get('@Url.Action("GetMessage", "Messages")', function(data) {
-                for (let i = 0; i < data.length; i++) {
-                    const formattedDate = formatDateTime(data[i].departureDate);
-                    if ('@User.Identity.Name' != data[i].user.userName) {
-                        $('.chat-messages').append($('<div class="message"><div class="avatar"><img src="' + data[i].user.avatar +
-                            '" alt="Аватар"></div><div class="message-content"><div class="message-date">' + formattedDate +
-                            '</div><div class="message-sender">' + data[i].user.userName +
-                            '</div><div class="message-text">' + data[i].messageText + '</div></div></div>'));
-                    } else {
-                        $('.chat-messages').append($('<div class="message my-message"><div class="avatar"><img src="' + data[i].user.avatar +
-                            '" alt="Аватар"></div><div class="message-content"><div class="message-date">' + formattedDate +
-                            '</div><div class="message-sender">' + data[i].user.userName +
-                            '</div><div class="message-text">' + data[i].messageText + '</div></div></div>'));
+            function formatDateTime(dateString) {
+                const date = new Date(dateString);
+                const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+                return date.toLocaleDateString(undefined, options);
+            }
+
+            function getMessage() {
+                $.get('@Url.Action("GetMessage", "Messages")', { id: @Model.Id }, function(data) {
+                    for (let i = data.length -1; i >= 0; i--) {
+                        const formattedDate = formatDateTime(data[i].departureDate);
+                        if ('@User.Identity.Name' != data[i].sender.userName) {
+                            $('.chat-messages').append($('<div class="message"><div class="avatar"><img src="' + data[i].sender.avatar +
+                                '" alt="Аватар"></div><div class="message-content"><div class="message-date">' + formattedDate +
+                                '</div><div class="message-sender">' + data[i].sender.name +
+                                '</div><div class="message-text">' + data[i].text + '</div></div></div>'));
+                        } else {
+                            $('.chat-messages').append($('<div class="message my-message"><div class="avatar"><img src="' + data[i].sender.avatar +
+                                '" alt="Аватар"></div><div class="message-content"><div class="message-date">' + formattedDate +
+                                '</div><div class="message-sender">' + data[i].sender.name +
+                                '</div><div class="message-text">' + data[i].text + '</div></div></div>'));
+                        }
                     }
-                }
+                });
+            }
+            
+            $('#send').click(function() {
+                $('#text').on('input', function() {
+                    if(this.value.length > 150) {
+                        this.value = this.value.substring(0, 150);
+                    }
+                });
+
+                $.ajax({
+                    url: '@Url.Action("AddMessage", "Messages")',
+                    type: 'POST',
+                    data: {
+                        'userName': '@User.Identity.Name',
+                        'responseId': '@Model.Id',
+                        'text': $('#text').val()
+                    },
+                    success: function (data) {
+                        const formattedDate = formatDateTime(data.departureDate);
+                        if ('@User.Identity.Name' != data.sender.userName) {
+                            $('.chat-messages').append($('<div class="message"><div class="avatar"><img src="' + data.sender.avatar +
+                                '" alt="Аватар"></div><div class="message-content"><div class="message-date">' + formattedDate +
+                                '</div><div class="message-sender">' + data.sender.name +
+                                '</div><div class="message-text">' + data.text + '</div></div></div>'));
+                        } else {
+                            $('.chat-messages').append($('<div class="message my-message"><div class="avatar"><img src="' + data.sender.avatar +
+                                '" alt="Аватар"></div><div class="message-content"><div class="message-date">' + formattedDate +
+                                '</div><div class="message-sender">' + data.sender.name +
+                                '</div><div class="message-text">' + data.text + '</div></div></div>'));
+                        }
+                        const chatMessages = $('.chat-messages');
+                        chatMessages.scrollTop(chatMessages[chatMessages.length - 1].scrollHeight);
+                        $('#text').val('');
+                    }
+                });
             });
-        }
-        setInterval(getMessage, 2000);
-        $('#send').click(function() {
-            $('#text').on('input', function() {
-                if(this.value.length > 150) {
-                    this.value = this.value.substring(0, 150);
-                }
-            });
-            $.ajax({
-                url: '@Url.Action("AddMessage", "Messages")',
-                type: 'POST',
-                data: {
-                    'userName': '@User.Identity.Name',
-                    'text': $('#text').val()
-                },
-                success: $('#text').val('')
+
+            $(document).on('click', '.message-sender', function() {
+                const userName = $(this).text();
+                window.location.href = '/Users/Details?name=' + userName;
             });
         });
-
-        $(document).on('click', '.message-sender', function() {
-            const userName = $(this).text();
-            window.location.href = '/Users/Details?name=' + userName;
-        });
-
-        
-    </script>*@
+    </script>
 }
+
 

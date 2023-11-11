@@ -127,7 +127,7 @@ namespace HeadHunter.Controllers
             Vacancy vacancy = await _context.Vacancies.FirstOrDefaultAsync(v => v.Id == id);
             if (vacancy != null)
             {
-                vacancy.IsPublished = true;
+                vacancy.IsPublished = !vacancy.IsPublished;
                 _context.Vacancies.Update(vacancy);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index", "Home");

@@ -151,7 +151,7 @@ namespace HeadHunter.Controllers
             Resume resume = await _context.Resumes.FirstOrDefaultAsync(r => r.Id == id);
             if (resume != null)
             {
-                resume.IsPublished = true;
+                resume.IsPublished = !resume.IsPublished;
                 _context.Resumes.Update(resume);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index", "Home");

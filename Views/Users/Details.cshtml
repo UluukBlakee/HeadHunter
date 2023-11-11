@@ -109,7 +109,7 @@
                             <td>
                                 <a asp-controller="Vacancies" asp-action="Edit" asp-route-id="@vacancy.Id">Редактировать</a> |
                                 <a asp-controller="Vacancies" asp-action="Update" asp-route-id="@vacancy.Id">Обновить</a> |
-                                <a asp-controller="Vacancies" asp-action="Publish" asp-route-id="@vacancy.Id">Опубликовать</a> |
+                                <a asp-controller="Vacancies" asp-action="Publish" asp-route-id="@vacancy.Id">@(vacancy.IsPublished ? "Снять" : "Опубликовать")</a> |
                                 <a asp-controller="Vacancies" asp-action="Details" asp-route-id="@vacancy.Id">Подробнее</a>
                             </td>
                         </tr>
@@ -187,7 +187,7 @@ else
                             <td>
                                 <a asp-controller="Resumes" asp-action="Edit" asp-route-id="@resume.Id">Редактировать</a> |
                                 <a asp-controller="Resumes" asp-action="Update" asp-route-id="@resume.Id">Обновить</a> |
-                                <a asp-controller="Resumes" asp-action="Publish" asp-route-id="@resume.Id">Опубликовать</a> |
+                                <a asp-controller="Resumes" asp-action="Publish" asp-route-id="@resume.Id">@(resume.IsPublished ? "Cнять" : "Опубликовать")</a> |
                                 <a asp-controller="Resumes" asp-action="Details" asp-route-id="@resume.Id">Подробнее</a>
                             </td>
                         </tr>
