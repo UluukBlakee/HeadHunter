@@ -1,5 +1,6 @@
 ﻿using HeadHunter.Enums;
 using HeadHunter.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using X.PagedList;
@@ -9,9 +10,11 @@ namespace HeadHunter.Controllers
     public class VacanciesController : Controller
     {
         private readonly HhContext _context;
-        public VacanciesController(HhContext context)
+        private readonly UserManager<User> _userManager;
+        public VacanciesController(HhContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
         public async Task<IActionResult> Index(int? page, string? filterCategory, string? search, VacancySortState sortState = VacancySortState.SalaryAsc)
         {
@@ -32,13 +35,32 @@ namespace HeadHunter.Controllers
                     case VacancySortState.SalaryDesc: vacancies = vacancies.OrderByDescending(v => v.Salary).ToList(); break;
                 }
                 ViewBag.User = user;
-                return View(vacancies.ToPagedList(pageNumber, pageSize));
+                List<Vacancy> filteredVacancies = new List<Vacancy>();
+                foreach (var vacancy in vacancies)
+                {
+                    bool userApplied = await HasUserApplied(vacancy.Id, user.Id);
+                    if (userApplied == false)
+                    {
+                        filteredVacancies.Add(vacancy);
+                    }
+                }
+                return View(filteredVacancies.ToPagedList(pageNumber, pageSize));
             }
             else
             {
                 return RedirectToAction("Create", "Resumes");
             }
         }
+
+        private async Task<bool> HasUserApplied(int vacancyId, int userId)
+        {
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            bool isInRole = await _userManager.IsInRoleAsync(user, "employer");
+            if (isInRole)
+                return _context.Responses.Any(r => r.VacancyId == vacancyId && r.EmployerId == userId);
+            return _context.Responses.Any(r => r.VacancyId == vacancyId && r.ApplicantId == userId);
+        }
+
         public async Task<IActionResult> Create()
         {
             return View();
@@ -95,7 +117,9 @@ namespace HeadHunter.Controllers
         }
         public async Task<IActionResult> Details(int id)
         {
-            Vacancy vacancy = await _context.Vacancies.FirstOrDefaultAsync(v => v.Id == id);
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
+            ViewBag.User = user;
+            Vacancy vacancy = await _context.Vacancies.Include(v => v.User).ThenInclude(u => u.Resumes).FirstOrDefaultAsync(v => v.Id == id);
             return View(vacancy);
         }
         public async Task<IActionResult> Publish(int id)

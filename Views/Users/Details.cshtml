@@ -95,6 +95,7 @@
                     <tr>
                         <th>Название вакансии</th>
                         <th>Дата обновления</th>
+                        <th>Опубликовано</th>
                         <th>Действия</th>
                     </tr>
                 </thead>
@@ -104,6 +105,7 @@
                         <tr>
                             <td>@vacancy.Title</td>
                             <td>@vacancy.LastUpdated</td>
+                            <td>@(vacancy.IsPublished ? "Да" : "Нет")</td>
                             <td>
                                 <a asp-controller="Vacancies" asp-action="Edit" asp-route-id="@vacancy.Id">Редактировать</a> |
                                 <a asp-controller="Vacancies" asp-action="Update" asp-route-id="@vacancy.Id">Обновить</a> |
@@ -171,6 +173,7 @@ else
                     <tr>
                         <th>Название резюме</th>
                         <th>Дата обновления</th>
+                        <th>Опубликовано</th>
                         <th>Действия</th>
                     </tr>
                 </thead>
@@ -180,6 +183,7 @@ else
                         <tr>
                             <td>@resume.Title</td>
                             <td>@resume.LastUpdated</td>
+                            <td>@(resume.IsPublished ? "Да" : "Нет")</td>
                             <td>
                                 <a asp-controller="Resumes" asp-action="Edit" asp-route-id="@resume.Id">Редактировать</a> |
                                 <a asp-controller="Resumes" asp-action="Update" asp-route-id="@resume.Id">Обновить</a> |

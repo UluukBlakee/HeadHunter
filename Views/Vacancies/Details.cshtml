@@ -1,0 +1,64 @@
+﻿@model HeadHunter.Models.Vacancy
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title" style="font-size: 2rem; color: black; font-weight: bold">@Model.Title</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Дата публикации: @Model.LastUpdated.ToShortDateString()</h6>
+        <p class="card-text" style="font-size: 1.5rem; color: black;">Заработная плата: @Model.Salary</p>
+        <a asp-controller="Users" asp-action="Details" asp-route-id="@Model.User.Id" class="text-decoration-none" style="color: black;">@Model.User.Name</a>
+        <br>
+        @if (User.IsInRole("applicant"))
+        {
+            <a href="#" id="responseBtn" data-bs-toggle="modal" data-bs-target="#responseModal" class="btn btn-primary mt-3">Откликнуться</a>
+        }
+    </div>
+</div>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.MinExperience):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.MinExperience) года
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Category):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Category)
+        </dd>
+    </dl>
+    <p>@Html.DisplayFor(model => model.Description)</p>
+</div>
+
+<div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="responseModalLabel">Выберите резюме, которое хотите отправить</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-controller="Responses" asp-action="Create">
+                    <div class="mb-3">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <label for="resumeId" class="form-label">Резюме</label>
+                        <select name="resumeId" class="form-select mt-2">
+                            <option value="" selected disabled>Выберите резюме</option>
+                            @foreach (var resume in Model.User.Resumes)
+                            {
+                                <option value="@resume.Id">@resume.Title</option>
+                            }
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Отправить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

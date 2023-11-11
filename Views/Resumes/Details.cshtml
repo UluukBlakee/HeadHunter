@@ -1,0 +1,109 @@
+﻿@model HeadHunter.Models.Resume
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div>
+    <h2 class="fw-bold">@Model.User.Name</h2>
+    <hr />
+    <dl class="row">
+        <dd class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Telegram):
+        </dd>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Telegram)
+        </dd>
+        <dd class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Email):
+        </dd>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dd class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PhoneNumber):
+        </dd>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+        @if (Model.FacebookLink != null)
+        {
+            <dd class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.FacebookLink):
+            </dd>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.FacebookLink)
+            </dd>
+        }
+        @if (Model.LinkedinLink != null)
+        {
+            <dd class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.LinkedinLink):
+            </dd>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.LinkedinLink)
+            </dd>
+        }
+    </dl>
+
+    <h3 class="fw-bold mt-3">@Html.DisplayFor(model => model.Title)</h3>
+    <hr />
+    <dl class="row">
+        <dd class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Category):
+        </dd>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Category)
+        </dd>
+        <dd class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ExpectedSalary):
+        </dd>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ExpectedSalary)
+        </dd>
+    </dl>
+
+    @if (Model.WorkExperiences.Any())
+    {
+        <h4 class="mt-3">Опыт работы</h4>
+        <hr />
+        @foreach (var work in Model.WorkExperiences)
+        {
+            <dl class="row">
+            <dd class = "col-sm-2">
+                @work.StartYear - @work.EndYear
+            </dd>
+            <dd class = "col-sm-10">
+                @work.CompanyName
+            </dd>
+            <dt class = "col-sm-2">
+            </dt>
+            <dd class = "col-sm-10">
+                @work.Position, @work.Responsibilities
+            </dd>
+        </dl>
+        }
+    }
+    
+    @if (Model.Educations.Any())
+    {
+        <h4 class="mt-3">Образования</h4>
+        <hr />
+        @foreach (var education in Model.Educations)
+        {
+            <dl class="row">
+            <dd class = "col-sm-2">
+                @education.StartYear - @education.EndYear
+            </dd>
+            <dd class = "col-sm-10">
+                @education.Institution
+            </dd>
+            <dt class = "col-sm-2">
+            </dt>
+            <dd class = "col-sm-10">
+                @education.Degree, @education.FieldOfStudy
+            </dd>
+        </dl>
+        }
+    }
+</div>

@@ -1,33 +1,11 @@
-﻿@model X.PagedList.IPagedList<HeadHunter.Models.Vacancy>
+﻿@model X.PagedList.IPagedList<HeadHunter.Models.Resume>
 @using X.PagedList.Mvc.Core
 
 @{
     ViewData["Title"] = "Index";
 }
 
-    <div class="row">
-        <div class="col-md-4 mb-3">
-            <form asp-action="Index" method="get">
-                <div class="form-group">
-                    <label for="sortState">Сортировать по:</label>
-                    <select name="sortState" class="form-select mt-2" onchange="this.form.submit()">
-                        <option>Сортировка</option>
-                        <option value="@ViewBag.SalarySort">По зарплате</option>
-                    </select>
-                </div>
-            </form>
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <form asp-action="Index" method="get">
-                <div class="form-group">
-                    <label for="search">Поиск</label>
-                    <input type="text" name="search" class="form-control mt-2" placeholder="Введите текст для поиска" />
-                </div>
-            </form>
-        </div>
-
-        <div class="col-md-4 mb-3">
+        <div class="col-md-4 mb-3 mx-auto">
             <form asp-action="Index" method="get">
                 <div class="form-group">
                     <label for="filterCategory">Фильтрация по категории:</label>
@@ -50,18 +28,18 @@
     </div>
 
 
-@foreach (var vacancy in Model)
+@foreach (var resume in Model)
 {
-    @if (vacancy.IsPublished == true)
+    @if (resume.IsPublished == true)
     {
         <div class="container">
-            <a asp-controller="Vacancies" asp-action="Details" asp-route-id="@vacancy.Id" class="text-decoration-none">
+            <a asp-controller="Resumes" asp-action="Details" asp-route-id="@resume.Id" class="text-decoration-none">
                 <div class="card mb-3">
                     <div class="card-body">
-                        <h5 class="card-title" style="font-size: 2rem; color: black; font-weight: bold">@vacancy.Title</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Дата публикации: @vacancy.LastUpdated.ToShortDateString()</h6>
-                        <p class="card-text" style="font-size: 1.5rem; color: black;">Заработная плата: @vacancy.Salary</p>
-                        <a asp-controller="Users" asp-action="Details" asp-route-id="@vacancy.User.Id" class="text-decoration-none" style="color: black;">@vacancy.User.Name</a>
+                        <h5 class="card-title" style="font-size: 2rem; color: black; font-weight: bold">@resume.Title</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Дата публикации: @resume.LastUpdated.ToShortDateString()</h6>
+                        <p class="card-text" style="font-size: 1.5rem; color: black;">Ожидаемая аработная плата: @resume.ExpectedSalary</p>
+                        <a asp-controller="Users" asp-action="Details" asp-route-id="@resume.User.Id" class="text-decoration-none" style="color: black;">@resume.User.Name</a>
                         <br>
                          <a href="#" data-bs-toggle="modal" data-bs-target="#responseModal" class="btn btn-primary mt-3">Откликнуться</a>
                     </div>
@@ -80,13 +58,13 @@
                     <div class="modal-body">
                         <form  method="post" asp-controller="Responses" asp-action="Create">
                             <div class="mb-3">
-                                <input type="hidden" name="id" value="@vacancy.Id" />
+                                <input type="hidden" name="resumeId" value="@resume.Id" />
                                 <label for="resumeId" class="form-label">Резюме</label>
-                                <select name="resumeId" class="form-select mt-2">
+                                <select name="id" class="form-select mt-2">
                                     <option value="" selected disabled>Выберите резюме</option>
-                                    @foreach (var resume in ViewBag.User.Resumes)
+                                    @foreach (var vacancy in ViewBag.User.Vacancies)
                                     {
-                                        <option value="@resume.Id">@resume.Title</option>
+                                        <option value="@vacancy.Id">@vacancy.Title</option>
                                     }
                                 </select>
                             </div>
@@ -101,5 +79,4 @@
 
 <div class="d-flex justify-content-center mt-3">
     @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
-</div>
-
+</div></table>

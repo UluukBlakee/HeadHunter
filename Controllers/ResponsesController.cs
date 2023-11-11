@@ -21,17 +21,24 @@ namespace HeadHunter.Controllers
             Resume resume = await _context.Resumes.FirstOrDefaultAsync(r => r.Id == resumeId);
             User applicant = await _context.Users.FirstOrDefaultAsync(u => u.Id == resume.UserId);
             User employer = await _context.Users.FirstOrDefaultAsync(u => u.Id == vacancy.UserId);
-            Response response = new Response()
+            bool responseExists = await _context.Responses
+            .AnyAsync(r => r.VacancyId == vacancy.Id && r.ResumeId == resume.Id);
+            if (responseExists)
+            {
+                Response response = await _context.Responses.FirstOrDefaultAsync(r => r.VacancyId == vacancy.Id && r.ResumeId == resume.Id);
+                return RedirectToAction("Chat", new { id = response.Id });
+            }
+            Response newResponse = new Response()
             {
                 EmployerId = employer.Id,
                 ApplicantId = applicant.Id,
                 ResumeId = resume.Id,
                 VacancyId = vacancy.Id
             };
-            _context.Responses.Add(response);
+            _context.Responses.Add(newResponse);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Chat", new { id = response.Id });
+            return RedirectToAction("Chat", new { id = newResponse.Id });
         }
         public async Task<IActionResult> Chat(int? id)
         {
@@ -61,6 +68,7 @@ namespace HeadHunter.Controllers
         {
             User user = await _context.Users.Include(u => u.Vacancies).FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
             bool isInRole = await _userManager.IsInRoleAsync(user, "employer");
+            ViewBag.User = user;
             ViewBag.Role = isInRole;
             if (isInRole)
             {
@@ -73,13 +81,7 @@ namespace HeadHunter.Controllers
                 .Include(r => r.Messages).Where(r => r.EmployerId == user.Id).ToListAsync();
                 if (vacancyId != null)
                 {
-                    responses = await _context.Responses
-                    .Include(r => r.Employer)
-                    .ThenInclude(e => e.Vacancies)
-                    .Include(r => r.Applicant)
-                    .Include(r => r.Vacancy)
-                    .Include(r => r.Resume)
-                    .Include(r => r.Messages).Where(r => r.EmployerId == user.Id).Where(r => r.VacancyId == vacancyId).ToListAsync();
+                    responses = await _context.Responses.Where(r => r.VacancyId == vacancyId).ToListAsync();
                 }
                 return View(responses);
             }

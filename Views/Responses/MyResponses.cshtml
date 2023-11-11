@@ -14,12 +14,9 @@
                     <label for="vacancy">Выберите вакансию:</label>
                     <select name="vacancyId" class="form-select mt-2" onchange="this.form.submit()">
                         <option>Вакансия</option>
-                        @foreach (var response in Model)
+                        @foreach (var vacancy in ViewBag.User.Vacancies)
                         {
-                            @foreach (var vacancy in response.Employer.Vacancies)
-                            {
-                                <option value="@vacancy.Id">@vacancy.Title</option>
-                            }
+                            <option value="@vacancy.Id">@vacancy.Title</option>
                         }
                     </select>
                 </div>
