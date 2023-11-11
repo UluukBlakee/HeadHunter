@@ -10,10 +10,12 @@ namespace HeadHunter.Controllers
     {
         private readonly HhContext _context;
         private readonly IWebHostEnvironment appEnvironment;
-        public UsersController(HhContext context, IWebHostEnvironment appEnvironment)
+        private readonly UserManager<User> _userManager;
+        public UsersController(HhContext context, IWebHostEnvironment appEnvironment, UserManager<User> userManager)
         {
             _context = context;
             this.appEnvironment = appEnvironment;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Details(int? id, string? name)
@@ -23,6 +25,9 @@ namespace HeadHunter.Controllers
             {
                 user = await _context.Users.Include(u => u.Resumes).ThenInclude(r => r.WorkExperiences).Include(u => u.Resumes).ThenInclude(r => r.Educations).Include(u => u.Vacancies).FirstOrDefaultAsync(u => u.Id == id);
             }
+            bool isInRole = await _userManager.IsInRoleAsync(user, "employer");
+            ViewBag.Role = isInRole;
+
             return View(user);
         }
 

@@ -1,0 +1,109 @@
+﻿@model IEnumerable<HeadHunter.Models.Response>
+
+@{
+    ViewData["Title"] = "MyResponses";
+}
+
+<h1>Мои отклики</h1>
+
+@if (ViewBag.Role)
+{
+    <div class="col-md-4 mb-3">
+            <form asp-action="MyResponses" method="get">
+                <div class="form-group">
+                    <label for="vacancy">Выберите вакансию:</label>
+                    <select name="vacancyId" class="form-select mt-2" onchange="this.form.submit()">
+                        <option>Вакансия</option>
+                        @foreach (var response in Model)
+                        {
+                            @foreach (var vacancy in response.Employer.Vacancies)
+                            {
+                                <option value="@vacancy.Id">@vacancy.Title</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        <table class="table">
+    <thead>
+        <tr>
+            <th>
+                Соискатель
+            </th>
+            <th>
+                Резюме
+            </th>
+            <th>
+                Вакансия
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <a asp-controller="Users" asp-action="Details" asp-route-id="@item.Applicant.Id">@item.Applicant.Name</a>
+            </td>
+            <td>
+                <a asp-controller="Resumes" asp-action="Details" asp-route-id="@item.Resume.Id">@item.Resume.Title</a>
+            </td>
+            <td>
+                <a asp-controller="Vacancies" asp-action="Details" asp-route-id="@item.Vacancy.Id">@item.Vacancy.Title</a>
+            </td>
+            <td>
+                <a class="btn btn-primary" asp-controller="Responses" asp-action="Chat" asp-route-id="@item.Id">Открыть чат</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+}
+
+
+else
+{
+    <table class="table">
+    <thead>
+        <tr>
+            <th>
+                Вакансия
+            </th>
+            <th>
+                Компания
+            </th>
+            <th>
+                Зарплата
+            </th>
+            <th>
+                Отправленное резюме
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <a asp-controller="Vacancies" asp-action="Details" asp-route-id="@item.Vacancy.Id">@item.Vacancy.Title</a>
+            </td>
+            <td>
+                <a asp-controller="Users" asp-action="Details" asp-route-id="@item.Employer.Id">@item.Employer.Name</a>
+            </td>
+            <td>
+                @item.Vacancy.Salary
+            </td>
+            <td>
+                <a asp-controller="Resumes" asp-action="Details" asp-route-id="@item.Resume.Id">@item.Resume.Title</a>
+            </td>
+            <td>
+                <a class="btn btn-primary" asp-controller="Responses" asp-action="Chat" asp-route-id="@item.Id">Открыть чат</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+}
+

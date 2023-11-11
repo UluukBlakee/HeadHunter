@@ -83,7 +83,7 @@
         </div>
     </div>
 
-@if (User.IsInRole("employer"))
+@if (ViewBag.Role)
 {
     @if (User.Identity.Name == Model.UserName)
     {

@@ -5,7 +5,7 @@
     ViewData["Title"] = "Index";
 }
 
-       <div class="row">
+    <div class="row">
         <div class="col-md-4 mb-3">
             <form asp-action="Index" method="get">
                 <div class="form-group">
@@ -52,47 +52,51 @@
 
 @foreach (var vacancy in Model)
 {
-    <a asp-controller="Vacancies" asp-action="Details" asp-route-id="@vacancy.Id" class="text-decoration-none">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title" style="font-size: 2rem; color: black; font-weight: bold">@vacancy.Title</h5>
-                <h6 class="card-subtitle mb-2 text-muted">Дата публикации: @vacancy.LastUpdated.ToShortDateString()</h6>
-                <p class="card-text" style="font-size: 1.5rem; color: black;">Заработная плата: @vacancy.Salary</p>
-                <a asp-controller="Users" asp-action="Details" asp-route-id="@vacancy.User.Id" class="text-decoration-none" style="color: black;">@vacancy.User.Name</a>
-                <br>
-                 <a href="#" data-bs-toggle="modal" data-bs-target="#responseModal" class="btn btn-primary mt-3">Откликнуться</a>
+    @if (vacancy.IsPublished == true)
+    {
+        <a asp-controller="Vacancies" asp-action="Details" asp-route-id="@vacancy.Id" class="text-decoration-none">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title" style="font-size: 2rem; color: black; font-weight: bold">@vacancy.Title</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Дата публикации: @vacancy.LastUpdated.ToShortDateString()</h6>
+                    <p class="card-text" style="font-size: 1.5rem; color: black;">Заработная плата: @vacancy.Salary</p>
+                    <a asp-controller="Users" asp-action="Details" asp-route-id="@vacancy.User.Id" class="text-decoration-none" style="color: black;">@vacancy.User.Name</a>
+                    <br>
+                     <a href="#" data-bs-toggle="modal" data-bs-target="#responseModal" class="btn btn-primary mt-3">Откликнуться</a>
+                </div>
             </div>
-        </div>
-    </a>
+        </a>
+
+        <div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="responseModalLabel">Выберите резюме которое хотите отправить</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form  method="post" asp-controller="Responses" asp-action="Create">
+                            <div class="mb-3">
+                                <input type="hidden" name="id" value="@vacancy.Id" />
+                                <label for="resumeId" class="form-label">Резюме</label>
+                                <select name="resumeId" class="form-select mt-2">
+                                    <option value="" selected disabled>Выберите резюме</option>
+                                    @foreach (var resume in ViewBag.User.Resumes)
+                                    {
+                                        <option value="@resume.Id">@resume.Title</option>
+                                    }
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Отправить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    }
 }
 
 <div class="d-flex justify-content-center mt-3">
     @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
 </div>
 
-
-    <div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="responseModalLabel">Выберите резюме которое хотите отправить</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="responseForm">
-                        <div class="mb-3">
-                            <label for="resume" class="form-label">Резюме</label>
-                            <select name="resume" class="form-select mt-2">
-                                <option value="" selected disabled>Выберите резюме</option>
-                                @foreach (var resume in ViewBag.User.Resumes)
-                                {
-                                    <option value="@resume.Id">@resume.Title</option>
-                                }
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Отправить</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>

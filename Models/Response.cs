@@ -11,8 +11,6 @@
         public Vacancy? Vacancy { get; set; }
         public int ResumeId { get; set; }
         public Resume? Resume { get; set; }
-        List<Message>? Messages { get; set; }
-        
-
+        public List<Message>? Messages { get; set; }
     }
 }
